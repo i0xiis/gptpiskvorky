@@ -23,24 +23,23 @@ body.dark-mode {
     font-weight: bold;
 }
 
-.board-size-buttons {
+.board-size-buttons, .win-condition-buttons {
     position: absolute;
-    top: 20px;
     right: 20px;
+    width: 300px;
     background-color: #e0e0e0;
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.board-size-buttons {
+    top: 20px;
 }
 
 .win-condition-buttons {
-    position: absolute;
-    top: 120px;
-    right: 20px;
-    background-color: #e0e0e0;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    top: 140px;
 }
 
 .size-label {
@@ -53,7 +52,8 @@ body.dark-mode {
 
 .board-size-buttons button,
 .win-condition-buttons button {
-    margin: 0 5px;
+    display: inline-block;
+    margin: 5px;
     padding: 8px 15px;
     font-size: 1em;
     cursor: pointer;
@@ -78,6 +78,13 @@ body.dark-mode {
 .board-size-buttons button.active,
 .win-condition-buttons button.active {
     background-color: #0066cc;
+}
+
+.board-size-buttons button:disabled,
+.win-condition-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .container {

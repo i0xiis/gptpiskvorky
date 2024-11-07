@@ -15,43 +15,63 @@ let currentPlayer = PLAYER_X;
 let gameActive = true;
 let boardState = [];
 const scores = new Map([[PLAYER_X, 0], [PLAYER_O, 0]]);
-let boardSize = 3;
-let winCondition = 3;
+let boardSize = 5;  // Změněno na 5
+let winCondition = 5;  // Změněno na 5
 
 function setBoardSize(size) {
     boardSize = size;
-    // Pokud je aktuální podmínka výhry větší než nová velikost pole, nastav ji na velikost pole
-    if (winCondition > size) {
-        winCondition = size;
+    // Nastavení podmínky výhry podle velikosti pole
+    if (size === 3) {
+        winCondition = 3;
+    } else if (size === 4) {
+        winCondition = 4;
+    } else {
+        winCondition = 5;
     }
-    // Zvýraznění aktivního tlačítka
-    document.querySelectorAll('.board-size-buttons button').forEach(button => {
-        button.classList.remove('active');
-        if (button.textContent.includes(size.toString())) {
-            button.classList.add('active');
-        }
-    });
+    // Nastavení velikosti buněk - menší pro 15×15
     const cellSize = size === 15 ? 40 : 100;
     document.documentElement.style.setProperty('--cell-size', cellSize + 'px');
     resetGame();
     renderBoard();
+    updateWinConditionButtons();
+    updateBoardSizeButtons();
+}
+
+function updateBoardSizeButtons() {
+    const buttons = document.querySelectorAll('.board-size-buttons button');
+    buttons.forEach(button => {
+        const size = parseInt(button.textContent);
+        if (size === boardSize) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    });
 }
 
 function setWinCondition(condition) {
-    // Kontrola, že podmínka výhry není větší než velikost hrací plochy
-    if (condition <= boardSize) {
-        winCondition = condition;
-        // Zvýraznění aktivního tlačítka
-        document.querySelectorAll('.win-condition-buttons button').forEach(button => {
+    winCondition = condition;
+    resetGame();
+    renderBoard();
+    updateWinConditionButtons();
+}
+
+function updateWinConditionButtons() {
+    const buttons = document.querySelectorAll('.win-condition-buttons button');
+    buttons.forEach(button => {
+        const condition = parseInt(button.textContent);
+        if (condition === winCondition) {
+            button.classList.add('active');
+        } else {
             button.classList.remove('active');
-            if (button.textContent === condition.toString()) {
-                button.classList.add('active');
-            }
-        });
-        resetGame();
-    } else {
-        alert('Počet polí k výhře nemůže být větší než velikost hrací plochy!');
-    }
+        }
+        // Zakázat tlačítka, která nejsou platná pro aktuální velikost pole
+        if ((boardSize === 3 && condition > 3) || (boardSize === 4 && condition > 4)) {
+            button.disabled = true;
+        } else {
+            button.disabled = false;
+        }
+    });
 }
 
 function renderBoard() {
@@ -85,7 +105,7 @@ function handleClick(event) {
 
     boardState[index] = currentPlayer;
     cell.textContent = currentPlayer;
-    cell.classList.toggle(currentPlayer, true);
+    cell.classList.add(currentPlayer);
 
     if (checkWin()) {
         message.textContent = `Hráč ${currentPlayer} vyhrál!`;
@@ -175,4 +195,6 @@ board.addEventListener('click', handleClick);
 darkModeToggle.addEventListener('click', toggleDarkMode);
 
 // Inicializace hry
+setBoardSize(5);  // Nastaví výchozí velikost na 5×5
 renderBoard();
+updateBoardSizeButtons();
