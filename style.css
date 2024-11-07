@@ -290,9 +290,10 @@ body.dark-mode .cell.O {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 300px;
+    width:  300px;
     text-align: center;
     border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .confirm-dialog-content p {
@@ -312,5 +313,20 @@ body.dark-mode .cell.O {
 }
 
 .confirm-dialog button:hover {
+    background-color: #45a049;
+}
+
+/* Dark mode styles for confirm dialog */
+body.dark-mode .confirm-dialog-content {
+    background-color: #333;
+    color: #f0f0f0;
+    border-color: #666;
+}
+
+body.dark-mode .confirm-dialog button {
+    background-color: #4CAF50;
+}
+
+body.dark-mode .confirm-dialog button:hover {
     background-color: #45a049;
 }

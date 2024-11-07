@@ -64,7 +64,7 @@ const translations = {
         playAgain: "Play Again",
         score: "Score",
         resetScore: "Reset Score",
-        confirmResetScore: "Are you sure you want to reset the score?",
+        confirmResetScore : "Are you sure you want to reset the score?",
         yes: "Yes",
         no: "No",
         boardSize: "Board size:",
@@ -81,6 +81,9 @@ function updateTexts() {
     document.querySelector('.board-size-buttons .size-label').textContent = translations[currentLanguage].boardSize;
     document.querySelector('.win-condition-buttons .size-label').textContent = translations[currentLanguage].winCondition;
     document.querySelector('.confirm-dialog-content p').textContent = translations[currentLanguage].confirmResetScore;
+
+    // Aktualizace zprávy o aktuálním hráči
+    message.textContent = translations[currentLanguage][currentPlayer === PLAYER_X ? 'playerXTurn' : 'playerOTurn'];
 }
 
 function setBoardSize(size) {
@@ -100,18 +103,6 @@ function setBoardSize(size) {
     updateBoardSizeButtons();
 }
 
-function updateBoardSizeButtons() {
-    const buttons = document.querySelectorAll('.board-size-buttons button');
-    buttons.forEach(button => {
-        const size = parseInt(button.textContent);
-        if (size === boardSize) {
-            button.classList.add('active');
-        } else {
-            button.classList.remove('active');
-        }
-    });
-}
-
 function setWinCondition(condition) {
     if (condition <= boardSize) {
         winCondition = condition;
@@ -119,23 +110,6 @@ function setWinCondition(condition) {
         renderBoard();
         updateWinConditionButtons();
     }
-}
-
-function updateWinConditionButtons() {
-    const buttons = document.querySelectorAll('.win-condition-buttons button');
-    buttons.forEach(button => {
-        const condition = parseInt(button.textContent);
-        if (condition === winCondition) {
-            button.classList.add('active');
-        } else {
-            button.classList.remove('active');
-        }
-        if (condition > boardSize) {
-            button.disabled = true;
-        } else {
-            button.disabled = false;
-        }
-    });
 }
 
 function renderBoard() {
@@ -195,106 +169,120 @@ function checkWin() {
 }
 
 function generateWinningCombinations(size, winCondition) {
-    const combinations = []; // Horizontální kombinace
+    const winningCombinations = [];
+
+    // Rows
     for (let row = 0; row < size; row++) {
         for (let col = 0; col <= size - winCondition; col++) {
             const combination = [];
             for (let i = 0; i < winCondition; i++) {
                 combination.push(row * size + (col + i));
             }
-            combinations.push(combination);
+            winningCombinations.push(combination);
         }
     }
 
-    // Vertikální kombinace
+    // Columns
     for (let col = 0; col < size; col++) {
-        for (let row = 0; row <= size - winCondition; row++) {
+        for (let row = 0; row <= size - winCondition ; row++) {
             const combination = [];
             for (let i = 0; i < winCondition; i++) {
                 combination.push((row + i) * size + col);
             }
-            combinations.push(combination);
+            winningCombinations.push(combination);
         }
     }
 
-    // Diagonální kombinace (zleva doprava)
+    // Diagonals (top-left to bottom-right)
     for (let row = 0; row <= size - winCondition; row++) {
         for (let col = 0; col <= size - winCondition; col++) {
             const combination = [];
             for (let i = 0; i < winCondition; i++) {
                 combination.push((row + i) * size + (col + i));
             }
-            combinations.push(combination);
+            winningCombinations.push(combination);
         }
     }
 
-    // Diagonální kombinace (sprava doleva)
+    // Diagonals (top-right to bottom-left)
     for (let row = 0; row <= size - winCondition; row++) {
         for (let col = winCondition - 1; col < size; col++) {
             const combination = [];
             for (let i = 0; i < winCondition; i++) {
                 combination.push((row + i) * size + (col - i));
             }
-            combinations.push(combination);
+            winningCombinations.push(combination);
         }
     }
 
-    return combinations;
+    return winningCombinations;
 }
 
 function highlightWinningCells() {
-    const winningCombination = generateWinningCombinations(boardSize, winCondition).find(combination => 
+    const winningCombinations = generateWinningCombinations(boardSize, winCondition);
+    const winningCombination = winningCombinations.find(combination => 
         combination.every(index => boardState[index] === currentPlayer)
     );
+
     if (winningCombination) {
         winningCombination.forEach(index => {
-            const cell = board.querySelector(`[data-index='${index}']`);
-            cell.classList.add('winning-cell');
+            const cell = board.querySelector(`.cell[data-index='${index}']`);
+            cell.classList.add('winner');
         });
     }
 }
 
 function updateScore(winner) {
     scores.set(winner, scores.get(winner) + 1);
-    scoreX.textContent = scores.get(PLAYER_X);
-    scoreO.textContent = scores.get(PLAYER_O);
+    scoreX.textContent = `X: ${scores.get(PLAYER_X)}`;
+    scoreO.textContent = `O: ${scores.get(PLAYER_O)}`;
 }
 
 function resetGame() {
     boardState = Array(boardSize * boardSize).fill(null);
     currentPlayer = PLAYER_X;
     gameActive = true;
-    message.textContent = translations[currentLanguage][currentPlayer === PLAYER_X ? 'playerXStarts' : 'playerOStarts'];
-    const cells = board.querySelectorAll('.cell');
-    cells.forEach(cell => {
-        cell.textContent = '';
-        cell.classList.remove(PLAYER_X, PLAYER_O, 'winning-cell');
-    });
+    renderBoard();
 }
 
-resetButton.addEventListener('click', resetGame);
-board.addEventListener('click', handleClick);
-darkModeToggle.addEventListener('click', () => {
+function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
-});
-resetScoreButton.addEventListener('click', () => {
+}
+
+function confirmResetScore() {
     confirmDialog.style.display = 'block';
-});
-confirmYes.addEventListener('click', () => {
+}
+
+function resetScore() {
     scores.set(PLAYER_X, 0);
     scores.set(PLAYER_O, 0);
-    scoreX.textContent = scores.get(PLAYER_X);
-    scoreO.textContent = scores.get(PLAYER_O);
+    scoreX.textContent = `X: ${scores.get(PLAYER_X)}`;
+    scoreO.textContent = `O: ${scores.get(PLAYER_O)}`;
     confirmDialog.style.display = 'none';
-});
-confirmNo.addEventListener('click', () => {
+}
+
+function closeConfirmDialog() {
     confirmDialog.style.display = 'none';
-});
+}
+
+function initializeButtons() {
+    updateBoardSizeButtons();
+    updateWinConditionButtons();
+}
+
+// Event Listeners
+board.addEventListener('click', handleClick);
+resetButton.addEventListener('click', resetGame);
+darkModeToggle.addEventListener('click', toggleDarkMode);
+resetScoreButton.addEventListener('click', confirmResetScore);
+confirmYes.addEventListener('click', resetScore);
+confirmNo.addEventListener('click', closeConfirmDialog);
 languageToggle.addEventListener('click', () => {
     currentLanguage = currentLanguage === 'cs' ? 'en' : 'cs';
     updateTexts();
 });
 
-// Inicializace hry
+// Initial setup
 updateTexts();
 renderBoard();
+initializeButtons();
