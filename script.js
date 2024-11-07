@@ -12,7 +12,9 @@ const {
     resetScoreButton,
     confirmDialog,
     confirmYes,
-    confirmNo
+    confirmNo,
+    boardSizeSelect,
+    winConditionSelect
 } = {
     board: document.getElementById('board'),
     message: document.getElementById('message'),
@@ -24,7 +26,9 @@ const {
     resetScoreButton: document.getElementById('resetScoreButton'),
     confirmDialog: document.getElementById('confirmDialog'),
     confirmYes: document.getElementById('confirmYes'),
-    confirmNo: document.getElementById('confirmNo')
+    confirmNo: document.getElementById('confirmNo'),
+    boardSizeSelect: document.getElementById('boardSizeSelect'),
+    winConditionSelect: document.getElementById('winConditionSelect')
 };
 
 let currentPlayer = PLAYER_X;
@@ -128,7 +132,7 @@ function renderBoard() {
     const cellSize = boardSize === 15 ? 40 : 100;
     board.style.gridTemplate = `repeat(${boardSize}, ${cellSize}px) / repeat(${boardSize}, ${cellSize}px)`;
 
-    boardState = Array(boardSize * boardSize).fill(null);
+    boardState = Array(boardSize * boardSize). fill(null);
     for (let i = 0; i < boardState.length; i++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
@@ -206,7 +210,7 @@ function highlightWinningCells() {
         .find(combination => combination.every(index => boardState[index] === currentPlayer));
     
     if (winningCombination) {
-        winningCombination. forEach(index => {
+        winningCombination.forEach(index => {
             const cell = board.querySelector(`[data-index="${index}"]`);
             cell.classList.add('winning-cell');
         });
@@ -226,6 +230,8 @@ function updateTranslations() {
     document.querySelector('.scoreboard').firstChild.textContent = `${translations[currentLanguage].score} - `;
     scoreX.textContent = `${translations[currentLanguage].scoreX}: ${scores.get(PLAYER_X)}`;
     scoreO.textContent = `${translations[currentLanguage].scoreO}: ${scores.get(PLAYER_O)}`;
+    boardSizeSelect.textContent = translations[currentLanguage].boardSize;
+    winConditionSelect.textContent = translations[currentLanguage].winCondition;
 }
 
 function updateScore(winner) {
@@ -251,7 +257,7 @@ confirmNo.addEventListener('click', () => {
     confirmDialog.style.display = 'none';
 });
 
-darkModeToggle.addEventListener('click', () => {
+darkModeToggle .addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
 });
 
