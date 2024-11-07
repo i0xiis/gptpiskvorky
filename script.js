@@ -77,7 +77,7 @@ function updateTexts() {
     resetScoreButton.textContent = translations[currentLanguage].resetScore;
     confirmYes.textContent = translations[currentLanguage].yes;
     confirmNo.textContent = translations[currentLanguage].no;
-    document.querySelector('.scoreboard').childNodes[0].textContent = `${translations[currentLanguage].score} - `;
+    document.querySelector('.score-text').textContent = `${translations[currentLanguage].score} - `;
     document.querySelector('.board-size-buttons .size-label').textContent = translations[currentLanguage].boardSize;
     document.querySelector('.win-condition-buttons .size-label').textContent = translations[currentLanguage].winCondition;
     document.querySelector('.confirm-dialog-content p').textContent = translations[currentLanguage].confirmResetScore;
@@ -195,24 +195,50 @@ function checkWin() {
 }
 
 function generateWinningCombinations(size, winCondition) {
-    const combinations = [];
-    const directions = [[1, 0], [0, 1], [1, 1], [1, -1]];
-    
+    const combinations = []; // Horizontální kombinace
     for (let row = 0; row < size; row++) {
-        for (let col = 0; col < size; col++) {
-            directions.forEach(([dx, dy]) => {
-                if (row + (winCondition - 1) * dx < size && 
-                    col + (winCondition - 1) * dy < size && 
-                    col + (winCondition - 1) * dy >= 0) {
-                    combinations.push(
-                        Array.from({length: winCondition}, (_, i) => 
-                            (row + i * dx) * size + (col + i * dy)
-                        )
-                    );
-                }
-            });
+        for (let col = 0; col <= size - winCondition; col++) {
+            const combination = [];
+            for (let i = 0; i < winCondition; i++) {
+                combination.push(row * size + (col + i));
+            }
+            combinations.push(combination);
         }
     }
+
+    // Vertikální kombinace
+    for (let col = 0; col < size; col++) {
+        for (let row = 0; row <= size - winCondition; row++) {
+            const combination = [];
+            for (let i = 0; i < winCondition; i++) {
+                combination.push((row + i) * size + col);
+            }
+            combinations.push(combination);
+        }
+    }
+
+    // Diagonální kombinace (zleva doprava)
+    for (let row = 0; row <= size - winCondition; row++) {
+        for (let col = 0; col <= size - winCondition; col++) {
+            const combination = [];
+            for (let i = 0; i < winCondition; i++) {
+                combination.push((row + i) * size + (col + i));
+            }
+            combinations.push(combination);
+        }
+    }
+
+    // Diagonální kombinace (sprava doleva)
+    for (let row = 0; row <= size - winCondition; row++) {
+        for (let col = winCondition - 1; col < size; col++) {
+            const combination = [];
+            for (let i = 0; i < winCondition; i++) {
+                combination.push((row + i) * size + (col - i));
+            }
+            combinations.push(combination);
+        }
+    }
+
     return combinations;
 }
 
@@ -222,54 +248,53 @@ function highlightWinningCells() {
     );
     if (winningCombination) {
         winningCombination.forEach(index => {
-            const cell = board.querySelector(`.cell[data-index='${index}']`);
-            cell.classList.add('winner');
+            const cell = board.querySelector(`[data-index='${index}']`);
+            cell.classList.add('winning-cell');
         });
     }
 }
 
 function updateScore(winner) {
     scores.set(winner, scores.get(winner) + 1);
-    scoreX.textContent = `X: ${scores.get(PLAYER_X)}`;
-    scoreO.textContent = `O: ${scores.get(PLAYER_O)}`;
+    scoreX.textContent = scores.get(PLAYER_X);
+    scoreO.textContent = scores.get(PLAYER_O);
 }
 
 function resetGame() {
     boardState = Array(boardSize * boardSize).fill(null);
     currentPlayer = PLAYER_X;
     gameActive = true;
-    renderBoard();
-}
-
-function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-}
-
-function resetScore() {
-    scores.set(PLAYER_X, 0);
-    scores.set(PLAYER_O, 0);
-    scoreX.textContent = `X: ${scores.get(PLAYER_X)}`;
-    scoreO.textContent = `O: ${scores.get(PLAYER_O)}`;
-    confirmDialog.style.display = 'none';
-}
-
-function confirmResetScore() {
-    confirmDialog.style.display = 'block';
-}
-
-function changeLanguage() {
-    currentLanguage = currentLanguage === 'cs' ? 'en' : 'cs';
-    updateTexts();
-    renderBoard();
     message.textContent = translations[currentLanguage][currentPlayer === PLAYER_X ? 'playerXStarts' : 'playerOStarts'];
+    const cells = board.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove(PLAYER_X, PLAYER_O, 'winning-cell');
+    });
 }
 
 resetButton.addEventListener('click', resetGame);
-darkModeToggle.addEventListener('click', toggleDarkMode);
-resetScoreButton.addEventListener('click', confirmResetScore);
-confirmYes.addEventListener('click', resetScore);
-confirmNo.addEventListener('click', () => confirmDialog.style.display = 'none');
-languageToggle.addEventListener('click', changeLanguage);
 board.addEventListener('click', handleClick);
+darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+});
+resetScoreButton.addEventListener('click', () => {
+    confirmDialog.style.display = 'block';
+});
+confirmYes.addEventListener('click', () => {
+    scores.set(PLAYER_X, 0);
+    scores.set(PLAYER_O, 0);
+    scoreX.textContent = scores.get(PLAYER_X);
+    scoreO.textContent = scores.get(PLAYER_O);
+    confirmDialog.style.display = 'none';
+});
+confirmNo.addEventListener('click', () => {
+    confirmDialog.style.display = 'none';
+});
+languageToggle.addEventListener('click', () => {
+    currentLanguage = currentLanguage === 'cs' ? 'en' : 'cs';
+    updateTexts();
+});
+
+// Inicializace hry
 updateTexts();
 renderBoard();
