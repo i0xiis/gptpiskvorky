@@ -50,8 +50,8 @@ const translations = {
         confirmReset: 'Opravdu chcete resetovat skóre?',
         yes: 'Ano',
         no: 'Ne',
-        scoreX: 'X:',
-        scoreO: 'O:'
+        scoreX: 'X',
+        scoreO: 'O'
     },
     en: {
         playerStart: 'Player X starts!',
@@ -67,8 +67,8 @@ const translations = {
         confirmReset: 'Do you really want to reset the score?',
         yes: 'Yes',
         no: 'No',
-        scoreX: 'X:',
-        scoreO: 'O:'
+        scoreX: 'X',
+        scoreO: 'O'
     }
 };
 
@@ -205,8 +205,9 @@ function highlightWinningCells() {
     const winningCombination = generateWinningCombinations(boardSize, winCondition)
         .find(combination => combination.every(index => boardState[index] === currentPlayer));
     
-    if (winningCombination) { winningCombination.forEach(index => {
-            const cell = board.querySelector(`[data-index='${index}']`);
+    if (winningCombination) {
+        winningCombination. forEach(index => {
+            const cell = board.querySelector(`[data-index="${index}"]`);
             cell.classList.add('winning-cell');
         });
     }
@@ -218,61 +219,47 @@ function resetGame() {
     gameActive = true;
     message.textContent = translations[currentLanguage].playerStart;
     resetButton.style.display = 'none';
-    board.querySelectorAll('.cell').forEach(cell => {
-        cell.textContent = '';
-        cell.classList.remove(PLAYER_X, PLAYER_O, 'winning-cell');
-    });
+    renderBoard();
 }
 
 function updateTranslations() {
-    if (gameActive) {
-        message.textContent = translations[currentLanguage].playerStart;
-    }
-    
-    scoreX.textContent = `${translations[currentLanguage].scoreX} ${scores.get(PLAYER_X)}`;
-    scoreO.textContent = `${translations[currentLanguage].scoreO} ${scores.get(PLAYER_O)}`;
-    resetScoreButton.textContent = translations[currentLanguage].resetScore;
-    
-    document.querySelectorAll('.size-label').forEach(label => {
-        if (label.closest('.board-size-buttons')) {
-            label.textContent = translations[currentLanguage].boardSize;
-        } else if (label.closest('.win-condition-buttons')) {
-            label.textContent = translations[currentLanguage].winCondition;
-        }
-    });
-    
-    document.querySelector('.confirm-dialog-content p').textContent = translations[currentLanguage].confirmReset;
-    confirmYes.textContent = translations[currentLanguage].yes;
-    confirmNo.textContent = translations[currentLanguage].no;
+    document.querySelector('.scoreboard').firstChild.textContent = `${translations[currentLanguage].score} - `;
+    scoreX.textContent = `${translations[currentLanguage].scoreX}: ${scores.get(PLAYER_X)}`;
+    scoreO.textContent = `${translations[currentLanguage].scoreO}: ${scores.get(PLAYER_O)}`;
 }
 
 function updateScore(winner) {
     scores.set(winner, scores.get(winner) + 1);
-    scoreX.textContent = `${translations[currentLanguage].scoreX} ${scores.get(PLAYER_X)}`;
-    scoreO.textContent = `${translations[currentLanguage].scoreO} ${scores.get(PLAYER_O)}`;
+    scoreX.textContent = `${translations[currentLanguage].scoreX}: ${scores.get(PLAYER_X)}`;
+    scoreO.textContent = `${translations[currentLanguage].scoreO}: ${scores.get(PLAYER_O)}`;
 }
 
-function toggleLanguage() {
+resetButton.addEventListener('click', resetGame);
+board.addEventListener('click', handleClick);
+resetScoreButton.addEventListener('click', () => {
+    confirmDialog.style.display = 'block';
+});
+
+confirmYes.addEventListener('click', () => {
+    scores.set(PLAYER_X, 0);
+    scores.set(PLAYER_O, 0);
+    updateTranslations();
+    confirmDialog.style.display = 'none';
+});
+
+confirmNo.addEventListener('click', () => {
+    confirmDialog.style.display = 'none';
+});
+
+darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+});
+
+languageToggle.addEventListener('click', () => {
     currentLanguage = currentLanguage === 'cs' ? 'en' : 'cs';
     updateTranslations();
-}
-
-// Initial setup and rendering
-setBoardSize(5);
-setWinCondition(5);
-updateBoardSizeButtons();
-updateWinConditionButtons();
-renderBoard();
-updateTranslations();
-
-board.addEventListener('click', handleClick);
-resetButton.addEventListener('click', resetGame);
-languageToggle.addEventListener('click', toggleLanguage);
-resetScoreButton.addEventListener('click', () => {
-    if (confirm(translations[currentLanguage].confirmReset)) {
-        scores.set(PLAYER_X, 0);
-        scores.set(PLAYER_O, 0);
-        updateScore(PLAYER_X);
-        updateScore(PLAYER_O);
-    }
+    resetGame();
 });
+
+setBoardSize(boardSize);
+updateTranslations();
