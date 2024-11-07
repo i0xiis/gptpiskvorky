@@ -7,14 +7,22 @@ const {
     resetButton, 
     scoreX, 
     scoreO, 
-    darkModeToggle 
+    darkModeToggle,
+    resetScoreButton,
+    confirmDialog,
+    confirmYes,
+    confirmNo
 } = {
     board: document.getElementById('board'),
     message: document.getElementById('message'),
     resetButton: document.getElementById('resetButton'),
     scoreX: document.getElementById('scoreX'),
     scoreO: document.getElementById('scoreO'),
-    darkModeToggle: document.getElementById('darkModeToggle')
+    darkModeToggle: document.getElementById('darkModeToggle'),
+    resetScoreButton: document.getElementById('resetScoreButton'),
+    confirmDialog: document.getElementById('confirmDialog'),
+    confirmYes: document.getElementById('confirmYes'),
+    confirmNo: document.getElementById('confirmNo')
 };
 
 let currentPlayer = PLAYER_X;
@@ -186,24 +194,38 @@ function resetGame() {
     renderBoard();
 }
 
+function resetScore() {
+    scores.set(PLAYER_X, 0);
+    scores.set(PLAYER_O, 0);
+    scoreX.textContent = '0';
+    scoreO.textContent = '0';
+}
+
+function showConfirmDialog() {
+    confirmDialog.style.display = 'block';
+}
+
+function hideConfirmDialog() {
+    confirmDialog.style.display = 'none';
+}
+
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     darkModeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
 }
 
-// Načtení uložené preference tmavého režimu
-if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-    darkModeToggle.textContent = '☀️';
-}
-
-// Event listeners
+resetButton.addEventListener('click', resetGame);
 board.addEventListener('click', handleClick);
 darkModeToggle.addEventListener('click', toggleDarkMode);
+resetScoreButton.addEventListener('click', showConfirmDialog);
+confirmYes.addEventListener('click', () => {
+    resetScore();
+    hideConfirmDialog();
+});
+confirmNo.addEventListener('click', hideConfirmDialog);
 
 // Inicializace hry
 setBoardSize(5);  // Nastaví výchozí velikost na 5×5
 renderBoard();
-updateBoardSizeButtons();
-updateWinConditionButtons();
+updateBoardSizeButtons();    // Zvýrazní aktivní velikost hrací plochy
+updateWinConditionButtons(); // Zvýrazní aktivní počet polí pro výhru

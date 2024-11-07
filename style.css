@@ -286,4 +286,13 @@ body.dark-mode .confirm-dialog-content {
     margin: 10px;
     padding: 5px 15px;
     cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0. 3s;
+}
+
+.confirm-dialog-content button:hover {
+    background-color: #45a049;
 }
