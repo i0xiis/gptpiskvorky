@@ -8,9 +8,11 @@
 </head>
 <body class="dark-mode">
     <div class="scoreboard">
-        Skóre - X: <span id="scoreX">0</span> | O: <span id="scoreO">0</span>
+        Skóre - <span id="scoreX">X: 0</span> | <span id="scoreO">O: 0</span>
         <button id="resetScoreButton" class="reset-score-button">Resetovat skóre</button>
     </div>
+
+
     <div class="settings-container">
         <div class="board-size-buttons">
             <div class="size-label">Velikost hrací plochy:</div>
@@ -26,12 +28,15 @@
             <button onclick="setWinCondition(5)">5</button>
         </div>
     </div>
+
     <div class="container">
         <div class="message" id="message">Hráč X začíná!</div>
         <div class="board" id="board"></div>
         <button id="resetButton" class="reset-button">Hrát znovu</button>
     </div>
+
     <button id="darkModeToggle" class="dark-mode-toggle">☀️</button>
+    <button id="languageToggle" class="language-toggle">🌐</button>
 
     <div id="confirmDialog" class="confirm-dialog">
         <div class="confirm-dialog-content">

@@ -8,6 +8,7 @@ const {
     scoreX, 
     scoreO, 
     darkModeToggle,
+    languageToggle,
     resetScoreButton,
     confirmDialog,
     confirmYes,
@@ -19,6 +20,7 @@ const {
     scoreX: document.getElementById('scoreX'),
     scoreO: document.getElementById('scoreO'),
     darkModeToggle: document.getElementById('darkModeToggle'),
+    languageToggle: document.getElementById('languageToggle'),
     resetScoreButton: document.getElementById('resetScoreButton'),
     confirmDialog: document.getElementById('confirmDialog'),
     confirmYes: document.getElementById('confirmYes'),
@@ -28,21 +30,57 @@ const {
 let currentPlayer = PLAYER_X;
 let gameActive = true;
 let boardState = [];
+let currentLanguage = 'cs';
 const scores = new Map([[PLAYER_X, 0], [PLAYER_O, 0]]);
 let boardSize = 5;  // Výchozí velikost 5×5
 let winCondition = 5;  // Výchozí podmínka výhry 5 polí
 
+const translations = {
+    cs: {
+        playerStart: 'Hráč X začíná!',
+        playerTurn: 'Tah hráče',
+        playerWon: 'Hráč',
+        won: 'vyhrál!',
+        draw: 'Remíza!',
+        playAgain: 'Hrát znovu',
+        score: 'Skóre',
+        resetScore: 'Resetovat skóre',
+        boardSize: 'Velikost hrací plochy:',
+        winCondition: 'Počet polí pro výhru:',
+        confirmReset: 'Opravdu chcete resetovat skóre?',
+        yes: 'Ano',
+        no: 'Ne',
+        scoreX: 'X',
+        scoreO: 'O'
+    },
+    en: {
+        playerStart: 'Player X starts!',
+        playerTurn: "Player's turn",
+        playerWon: 'Player',
+        won: 'won!',
+        draw: 'Draw!',
+        playAgain: 'Play Again',
+        score: 'Score',
+        resetScore: 'Reset Score',
+        boardSize: 'Board Size:',
+        winCondition: 'Win Condition:',
+        confirmReset: 'Do you really want to reset the score?',
+        yes: 'Yes',
+        no: 'No',
+        scoreX: 'X',
+        scoreO: 'O'
+    }
+};
+
 function setBoardSize(size) {
     boardSize = size;
-    // Nastavení podmínky výhry podle velikosti pole
     if (size === 3) {
         winCondition = 3;
     } else if (size === 4) {
         winCondition = 4;
     } else {
-        winCondition = 5;  // Pro velikosti 5 a 15 je podmínka výhry 5
+        winCondition = 5;
     }
-    // Nastavení velikosti buněk - menší pro 15×15
     const cellSize = size === 15 ? 40 : 100;
     document.documentElement.style.setProperty('--cell-size', cellSize + 'px');
     resetGame();
@@ -81,12 +119,7 @@ function updateWinConditionButtons() {
         } else {
             button.classList.remove('active');
         }
-        // Zakázat tlačítka, která nejsou platná pro aktuální velikost pole
-        if (condition > boardSize) {
-            button.disabled = true;
-        } else {
-            button.disabled = false;
-        }
+        button.disabled = condition > boardSize;
     });
 }
 
@@ -96,7 +129,7 @@ function renderBoard() {
     board.style.gridTemplate = `repeat(${boardSize}, ${cellSize}px) / repeat(${boardSize}, ${cellSize}px)`;
 
     boardState = Array(boardSize * boardSize).fill(null);
-    for (let i = 0; i < boardSize * boardSize; i++) {
+    for (let i = 0; i < boardState.length; i++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.setAttribute('data-index', i);
@@ -107,7 +140,7 @@ function renderBoard() {
     }
     
     gameActive = true;
-    message.textContent = `Hráč ${currentPlayer} začíná!`;
+    message.textContent = translations[currentLanguage].playerStart;
     resetButton.style.display = 'none';
 }
 
@@ -124,18 +157,18 @@ function handleClick(event) {
     cell.classList.add(currentPlayer);
 
     if (checkWin()) {
-        message.textContent = `Hráč ${currentPlayer} vyhrál!`;
+        message.textContent = `${translations[currentLanguage].playerWon} ${currentPlayer} ${translations[currentLanguage].won}`;
         gameActive = false;
         highlightWinningCells();
         updateScore(currentPlayer);
         resetButton.style.display = 'block';
     } else if (boardState.every(cell => cell)) {
-        message.textContent = 'Remíza!';
+        message.textContent = translations[currentLanguage].draw;
         gameActive = false;
         resetButton.style.display = 'block';
     } else {
         currentPlayer = currentPlayer === PLAYER_X ? PLAYER_O : PLAYER_X;
-        message.textContent = `Tah hráče ${currentPlayer}`;
+        message.textContent = `${translations[currentLanguage].playerTurn} ${currentPlayer}`;
     }
 }
 
@@ -173,59 +206,60 @@ function highlightWinningCells() {
         .find(combination => combination.every(index => boardState[index] === currentPlayer));
     
     if (winningCombination) {
-        winningCombination.forEach(index => 
-            document.querySelector(`.cell[data-index="${index}"]`).classList.add('winner')
-        );
-    }
-}
-
-function updateScore(winner) {
-    scores.set(winner, scores.get(winner) + 1);
-    if (winner === PLAYER_X) {
-        scoreX.textContent = scores.get(PLAYER_X);
-    } else {
-        scoreO.textContent = scores.get(PLAYER_O);
+        winningCombination. forEach(index => {
+            const cell = board.querySelector(`[data-index="${index}"]`);
+            cell.classList.add('winning-cell');
+        });
     }
 }
 
 function resetGame() {
-    currentPlayer = PLAYER_X;
     boardState = Array(boardSize * boardSize).fill(null);
+    currentPlayer = PLAYER_X;
+    gameActive = true;
+    message.textContent = translations[currentLanguage].playerStart;
+    resetButton.style.display = 'none';
     renderBoard();
 }
 
-function resetScore() {
-    scores.set(PLAYER_X, 0);
-    scores.set(PLAYER_O, 0);
-    scoreX.textContent = '0';
-    scoreO.textContent = '0';
+function updateTranslations() {
+    document.querySelector('.scoreboard').firstChild.textContent = `${translations[currentLanguage].score} - `;
+    scoreX.textContent = `${translations[currentLanguage].scoreX}: ${scores.get(PLAYER_X)}`;
+    scoreO.textContent = `${translations[currentLanguage].scoreO}: ${scores.get(PLAYER_O)}`;
 }
 
-function showConfirmDialog() {
-    confirmDialog.style.display = 'block';
-}
-
-function hideConfirmDialog() {
-    confirmDialog.style.display = 'none';
-}
-
-function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    darkModeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+function updateScore(winner) {
+    scores.set(winner, scores.get(winner) + 1);
+    scoreX.textContent = `${translations[currentLanguage].scoreX}: ${scores.get(PLAYER_X)}`;
+    scoreO.textContent = `${translations[currentLanguage].scoreO}: ${scores.get(PLAYER_O)}`;
 }
 
 resetButton.addEventListener('click', resetGame);
 board.addEventListener('click', handleClick);
-darkModeToggle.addEventListener('click', toggleDarkMode);
-resetScoreButton.addEventListener('click', showConfirmDialog);
-confirmYes.addEventListener('click', () => {
-    resetScore();
-    hideConfirmDialog();
+resetScoreButton.addEventListener('click', () => {
+    confirmDialog.style.display = 'block';
 });
-confirmNo.addEventListener('click', hideConfirmDialog);
 
-// Inicializace hry
-setBoardSize(5);  // Nastaví výchozí velikost na 5×5
-renderBoard();
-updateBoardSizeButtons();    // Zvýrazní aktivní velikost hrací plochy
-updateWinConditionButtons(); // Zvýrazní aktivní počet polí pro výhru
+confirmYes.addEventListener('click', () => {
+    scores.set(PLAYER_X, 0);
+    scores.set(PLAYER_O, 0);
+    updateTranslations();
+    confirmDialog.style.display = 'none';
+});
+
+confirmNo.addEventListener('click', () => {
+    confirmDialog.style.display = 'none';
+});
+
+darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+});
+
+languageToggle.addEventListener('click', () => {
+    currentLanguage = currentLanguage === 'cs' ? 'en' : 'cs';
+    updateTranslations();
+    resetGame();
+});
+
+setBoardSize(boardSize);
+updateTranslations();
