@@ -33,6 +33,16 @@ body.dark-mode {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.win-condition-buttons {
+    position: absolute;
+    top: 120px;
+    right: 20px;
+    background-color: #e0e0e0;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .size-label {
     text-align: center;
     margin-bottom: 15px;
@@ -41,7 +51,8 @@ body.dark-mode {
     font-size: 1.1em;
 }
 
-.board-size-buttons button {
+.board-size-buttons button,
+.win-condition-buttons button {
     margin: 0 5px;
     padding: 8px 15px;
     font-size: 1em;
@@ -53,16 +64,19 @@ body.dark-mode {
     transition: all 0.3s ease;
 }
 
-.board-size-buttons button:hover {
+.board-size-buttons button:hover,
+.win-condition-buttons button:hover {
     background-color: #777;
     transform: translateY(-2px);
 }
 
-.board-size-buttons button:active {
+.board-size-buttons button:active,
+.win-condition-buttons button:active {
     transform: translateY(0);
 }
 
-.board-size-buttons button.active {
+.board-size-buttons button.active,
+.win-condition-buttons button.active {
     background-color: #0066cc;
 }
 
@@ -139,7 +153,8 @@ body.dark-mode {
 }
 
 /* Dark mode styles */
-body.dark-mode .board-size-buttons {
+body.dark-mode .board-size-buttons,
+body.dark-mode .win-condition-buttons {
     background-color: #444;
 }
 
@@ -147,15 +162,18 @@ body.dark-mode .size-label {
     color: #fff;
 }
 
-body.dark-mode .board-size-buttons button {
+body.dark-mode .board-size-buttons button,
+body.dark-mode .win-condition-buttons button {
     background-color: #666;
 }
 
-body.dark-mode .board-size-buttons button:hover {
+body.dark-mode .board-size-buttons button:hover,
+body.dark-mode .win-condition-buttons button:hover {
     background-color: #888;
 }
 
-body.dark-mode .board-size-buttons button.active {
+body.dark-mode .board-size-buttons button.active,
+body.dark-mode .win-condition-buttons button.active {
     background-color: #3399ff;
 }
 
@@ -189,20 +207,20 @@ body.dark-mode .dark-mode-toggle:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-/* Přidejte tyto styly pro barevné X a O */
+/* Barevné X a O */
 .cell.X {
-    color: #0066cc; /* modrá barva pro X */
+    color: #0066cc;
 }
 
 .cell.O {
-    color: #cc0000; /* červená barva pro O */
+    color: #cc0000;
 }
 
-/* Pro tmavý režim možná budete chtít upravit sytost barev */
+/* Barvy pro tmavý režim */
 body.dark-mode .cell.X {
-    color: #3399ff; /* světlejší modrá pro tmavý režim */
+    color: #3399ff;
 }
 
 body.dark-mode .cell.O {
-    color: #ff3333; /* světlejší červená pro tmavý režim */
+    color: #ff3333;
 }

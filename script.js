@@ -20,13 +20,38 @@ let winCondition = 3;
 
 function setBoardSize(size) {
     boardSize = size;
-    // Nastavení podmínky výhry - pro 15×15 je to 5, jinak stejné jako velikost
-    winCondition = size === 15 ? 5 : size;
-    // Nastavení velikosti buněk - menší pro 15×15
+    // Pokud je aktuální podmínka výhry větší než nová velikost pole, nastav ji na velikost pole
+    if (winCondition > size) {
+        winCondition = size;
+    }
+    // Zvýraznění aktivního tlačítka
+    document.querySelectorAll('.board-size-buttons button').forEach(button => {
+        button.classList.remove('active');
+        if (button.textContent.includes(size.toString())) {
+            button.classList.add('active');
+        }
+    });
     const cellSize = size === 15 ? 40 : 100;
     document.documentElement.style.setProperty('--cell-size', cellSize + 'px');
     resetGame();
     renderBoard();
+}
+
+function setWinCondition(condition) {
+    // Kontrola, že podmínka výhry není větší než velikost hrací plochy
+    if (condition <= boardSize) {
+        winCondition = condition;
+        // Zvýraznění aktivního tlačítka
+        document.querySelectorAll('.win-condition-buttons button').forEach(button => {
+            button.classList.remove('active');
+            if (button.textContent === condition.toString()) {
+                button.classList.add('active');
+            }
+        });
+        resetGame();
+    } else {
+        alert('Počet polí k výhře nemůže být větší než velikost hrací plochy!');
+    }
 }
 
 function renderBoard() {
@@ -41,7 +66,6 @@ function renderBoard() {
         cell.setAttribute('data-index', i);
         cell.style.width = `${cellSize}px`;
         cell.style.height = `${cellSize}px`;
-        // Upravení velikosti fontu pro 15×15
         cell.style.fontSize = boardSize === 15 ? '1.2em' : '2em';
         board.appendChild(cell);
     }
