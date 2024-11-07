@@ -177,21 +177,7 @@ body.dark-mode {
     transition: background-color 0.3s;
 }
 
-.language-toggle {
-    position: absolute;
-    bottom: 20px;
-    right: 80px;
-    font-size: 1.5em;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 50%;
-    transition: background-color 0.3s;
-}
-
-.dark-mode-toggle:hover,
-.language-toggle:hover {
+.dark-mode-toggle:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -246,8 +232,7 @@ body.dark-mode .reset-button:hover {
     background-color: #45a049;
 }
 
-body.dark-mode .dark-mode-toggle:hover,
-body.dark-mode .language-toggle:hover {
+body.dark-mode .dark-mode-toggle:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -292,15 +277,20 @@ body.dark-mode .cell.O {
     border-radius: 5px;
 }
 
+body.dark-mode .confirm-dialog-content {
+    background-color: #333;
+    color: #fff;
+}
+
 .confirm-dialog-content button {
-    margin: 5px;
-    padding: 10px 15px;
+    margin: 10px;
+    padding: 5px 15px;
     cursor: pointer;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    transition: background-color 0. 3s;
 }
 
 .confirm-dialog-content button:hover {
