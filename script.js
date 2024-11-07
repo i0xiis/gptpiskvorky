@@ -1,6 +1,6 @@
 const PLAYER_X = 'X';
 const PLAYER_O = 'O';
-const CELL_SIZE = 100;
+const CELL_SIZE = 40; // Zmenšená velikost buňky pro 15×15
 
 const { board, message, resetButton, scoreX, scoreO } = {
     board: document.getElementById('board'),
@@ -19,22 +19,29 @@ let winCondition = 3;
 
 function setBoardSize(size) {
     boardSize = size;
-    winCondition = size;
+    // Nastavení podmínky výhry - pro 15×15 je to 5, jinak stejné jako velikost
+    winCondition = size === 15 ? 5 : size;
+    // Nastavení velikosti buněk - menší pro 15×15
+    const cellSize = size === 15 ? 40 : 100;
+    document.documentElement.style.setProperty('--cell-size', cellSize + 'px');
     resetGame();
     renderBoard();
 }
 
 function renderBoard() {
     board.innerHTML = '';
-    board.style.gridTemplate = `repeat(${boardSize}, ${CELL_SIZE}px) / repeat(${boardSize}, ${CELL_SIZE}px)`;
+    const cellSize = boardSize === 15 ? 40 : 100;
+    board.style.gridTemplate = `repeat(${boardSize}, ${cellSize}px) / repeat(${boardSize}, ${cellSize}px)`;
 
     boardState = Array(boardSize * boardSize).fill(null);
     for (let i = 0; i < boardSize * boardSize; i++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.setAttribute('data-index', i);
-        cell.style.width = `${CELL_SIZE}px`;
-        cell.style.height = `${CELL_SIZE}px`;
+        cell.style.width = `${cellSize}px`;
+        cell.style.height = `${cellSize}px`;
+        // Upravení velikosti fontu pro 15×15
+        cell.style.fontSize = boardSize === 15 ? '1.2em' : '2em';
         board.appendChild(cell);
     }
     

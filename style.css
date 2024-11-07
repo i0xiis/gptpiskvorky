@@ -5,12 +5,14 @@ body {
     height: 100vh;
     font-family: Arial, sans-serif;
     margin: 0;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-.size-label {
-    text-align: center;
-    margin-bottom: 10px;
-    font-weight: bold;
+body.dark-mode {
+    background-color: #222;
+    color: #f0f0f0;
 }
 
 .scoreboard {
@@ -25,13 +27,43 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
+    background-color: #e0e0e0;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.size-label {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1em;
 }
 
 .board-size-buttons button {
     margin: 0 5px;
-    padding: 5px 10px;
+    padding: 8px 15px;
     font-size: 1em;
     cursor: pointer;
+    background-color: #999;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.board-size-buttons button:hover {
+    background-color: #777;
+    transform: translateY(-2px);
+}
+
+.board-size-buttons button:active {
+    transform: translateY(0);
+}
+
+.board-size-buttons button.active {
+    background-color: #0066cc;
 }
 
 .container {
@@ -49,6 +81,9 @@ body {
 .board {
     display: grid;
     gap: 5px;
+    background-color: #ddd;
+    padding: 10px;
+    border-radius: 10px;
 }
 
 .cell {
@@ -62,6 +97,10 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.cell:hover {
+    background-color: #e0e0e0;
+}
+
 .cell.winner {
     background-color: #bdf8b7;
 }
@@ -70,5 +109,100 @@ body {
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 1em;
-    display: none;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.reset-button:hover {
+    background-color: #45a049;
+}
+
+.dark-mode-toggle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 1.5em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.dark-mode-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark mode styles */
+body.dark-mode .board-size-buttons {
+    background-color: #444;
+}
+
+body.dark-mode .size-label {
+    color: #fff;
+}
+
+body.dark-mode .board-size-buttons button {
+    background-color: #666;
+}
+
+body.dark-mode .board-size-buttons button:hover {
+    background-color: #888;
+}
+
+body.dark-mode .board-size-buttons button.active {
+    background-color: #3399ff;
+}
+
+body.dark-mode .board {
+    background-color: #444;
+}
+
+body.dark-mode .cell {
+    background-color: #333;
+    border-color: #666;
+    color: #f0f0f0;
+}
+
+body.dark-mode .cell:hover {
+    background-color: #444;
+}
+
+body.dark-mode .cell.winner {
+    background-color: #4caf50;
+}
+
+body.dark-mode .reset-button {
+    background-color: #4CAF50;
+}
+
+body.dark-mode .reset-button:hover {
+    background-color: #45a049;
+}
+
+body.dark-mode .dark-mode-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Přidejte tyto styly pro barevné X a O */
+.cell.X {
+    color: #0066cc; /* modrá barva pro X */
+}
+
+.cell.O {
+    color: #cc0000; /* červená barva pro O */
+}
+
+/* Pro tmavý režim možná budete chtít upravit sytost barev */
+body.dark-mode .cell.X {
+    color: #3399ff; /* světlejší modrá pro tmavý režim */
+}
+
+body.dark-mode .cell.O {
+    color: #ff3333; /* světlejší červená pro tmavý režim */
 }
