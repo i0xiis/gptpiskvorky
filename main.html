@@ -9,28 +9,37 @@
 <body class="dark-mode">
     <div class="scoreboard">
         Skóre - X: <span id="scoreX">0</span> | O: <span id="scoreO">0</span>
+        <button id="resetScoreButton" class="reset-score-button">Resetovat skóre</button>
     </div>
     <div class="settings-container">
-    <div class="board-size-buttons">
-        <div class="size-label">Velikost hrací plochy:</div>
-        <button onclick="setBoardSize(3)">3×3</button>
-        <button onclick="setBoardSize(4)">4×4</button>
-        <button onclick="setBoardSize(5)">5×5</button>
-        <button onclick="setBoardSize(15)">15×15</button>
+        <div class="board-size-buttons">
+            <div class="size-label">Velikost hrací plochy:</div>
+            <button onclick="setBoardSize(3)">3×3</button>
+            <button onclick="setBoardSize(4)">4×4</button>
+            <button onclick="setBoardSize(5)">5×5</button>
+            <button onclick="setBoardSize(15)">15×15</button>
+        </div>
+        <div class="win-condition-buttons">
+            <div class="size-label">Počet polí pro výhru:</div>
+            <button onclick="setWinCondition(3)">3</button>
+            <button onclick="setWinCondition(4)">4</button>
+            <button onclick="setWinCondition(5)">5</button>
+        </div>
     </div>
-    <div class="win-condition-buttons">
-        <div class="size-label">Počet polí pro výhru:</div>
-        <button onclick="setWinCondition(3)">3</button>
-        <button onclick="setWinCondition(4)">4</button>
-        <button onclick="setWinCondition(5)">5</button>
-    </div>
-</div>
     <div class="container">
         <div class="message" id="message">Hráč X začíná!</div>
         <div class="board" id="board"></div>
-        <button id="resetButton" class="reset-button" onclick="resetGame()">Hrát znovu</button>
+        <button id="resetButton" class="reset-button">Hrát znovu</button>
     </div>
     <button id="darkModeToggle" class="dark-mode-toggle">☀️</button>
+
+    <div id="confirmDialog" class="confirm-dialog">
+        <div class="confirm-dialog-content">
+            <p>Opravdu chcete resetovat skóre?</p>
+            <button id="confirmYes">Ano</button>
+            <button id="confirmNo">Ne</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

@@ -1,8 +1,14 @@
 const PLAYER_X = 'X';
 const PLAYER_O = 'O';
-const CELL_SIZE = 40; // Zmenšená velikost buňky pro 15×15
 
-const { board, message, resetButton, scoreX, scoreO, darkModeToggle } = {
+const { 
+    board, 
+    message, 
+    resetButton, 
+    scoreX, 
+    scoreO, 
+    darkModeToggle 
+} = {
     board: document.getElementById('board'),
     message: document.getElementById('message'),
     resetButton: document.getElementById('resetButton'),
@@ -15,8 +21,8 @@ let currentPlayer = PLAYER_X;
 let gameActive = true;
 let boardState = [];
 const scores = new Map([[PLAYER_X, 0], [PLAYER_O, 0]]);
-let boardSize = 5;  // Změněno na 5
-let winCondition = 5;  // Změněno na 5
+let boardSize = 5;  // Výchozí velikost 5×5
+let winCondition = 5;  // Výchozí podmínka výhry 5 polí
 
 function setBoardSize(size) {
     boardSize = size;
@@ -26,7 +32,7 @@ function setBoardSize(size) {
     } else if (size === 4) {
         winCondition = 4;
     } else {
-        winCondition = 5;
+        winCondition = 5;  // Pro velikosti 5 a 15 je podmínka výhry 5
     }
     // Nastavení velikosti buněk - menší pro 15×15
     const cellSize = size === 15 ? 40 : 100;
@@ -50,10 +56,12 @@ function updateBoardSizeButtons() {
 }
 
 function setWinCondition(condition) {
-    winCondition = condition;
-    resetGame();
-    renderBoard();
-    updateWinConditionButtons();
+    if (condition <= boardSize) {
+        winCondition = condition;
+        resetGame();
+        renderBoard();
+        updateWinConditionButtons();
+    }
 }
 
 function updateWinConditionButtons() {
@@ -66,7 +74,7 @@ function updateWinConditionButtons() {
             button.classList.remove('active');
         }
         // Zakázat tlačítka, která nejsou platná pro aktuální velikost pole
-        if ((boardSize === 3 && condition > 3) || (boardSize === 4 && condition > 4)) {
+        if (condition > boardSize) {
             button.disabled = true;
         } else {
             button.disabled = false;
@@ -198,3 +206,4 @@ darkModeToggle.addEventListener('click', toggleDarkMode);
 setBoardSize(5);  // Nastaví výchozí velikost na 5×5
 renderBoard();
 updateBoardSizeButtons();
+updateWinConditionButtons();
