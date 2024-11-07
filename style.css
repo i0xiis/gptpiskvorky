@@ -7,6 +7,12 @@ body {
     margin: 0;
 }
 
+.size-label {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
 .scoreboard {
     position: absolute;
     top: 20px;
@@ -53,6 +59,7 @@ body {
     background-color: #f0f0f0;
     cursor: pointer;
     border: 2px solid #333;
+    transition: background-color 0.3s ease;
 }
 
 .cell.winner {

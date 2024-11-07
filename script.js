@@ -1,44 +1,51 @@
-const board = document.getElementById('board');
-const message = document.getElementById('message');
-const resetButton = document.getElementById('resetButton');
-const scoreX = document.getElementById('scoreX');
-const scoreO = document.getElementById('scoreO');
+const PLAYER_X = 'X';
+const PLAYER_O = 'O';
+const CELL_SIZE = 100;
 
-let currentPlayer = 'X';
+const { board, message, resetButton, scoreX, scoreO } = {
+    board: document.getElementById('board'),
+    message: document.getElementById('message'),
+    resetButton: document.getElementById('resetButton'),
+    scoreX: document.getElementById('scoreX'),
+    scoreO: document.getElementById('scoreO')
+};
+
+let currentPlayer = PLAYER_X;
 let gameActive = true;
 let boardState = [];
-let scores = { X: 0, O: 0 };
+const scores = new Map([[PLAYER_X, 0], [PLAYER_O, 0]]);
 let boardSize = 3;
 let winCondition = 3;
 
 function setBoardSize(size) {
     boardSize = size;
-    winCondition = size === 3 ? 3 : size === 4 ? 4 : 5;
+    winCondition = size;
     resetGame();
     renderBoard();
 }
 
 function renderBoard() {
     board.innerHTML = '';
-    board.style.gridTemplateColumns = `repeat(${boardSize}, 100px)`;
-    board.style.gridTemplateRows = `repeat(${boardSize}, 100px)`;
+    board.style.gridTemplate = `repeat(${boardSize}, ${CELL_SIZE}px) / repeat(${boardSize}, ${CELL_SIZE}px)`;
 
     boardState = Array(boardSize * boardSize).fill(null);
     for (let i = 0; i < boardSize * boardSize; i++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.setAttribute('data-index', i);
-        cell.style.width = `${100}px`;
-        cell.style.height = `${100}px`;
-        cell.addEventListener('click', handleClick);
+        cell.style.width = `${CELL_SIZE}px`;
+        cell.style.height = `${CELL_SIZE}px`;
         board.appendChild(cell);
     }
+    
     gameActive = true;
     message.textContent = `Hráč ${currentPlayer} začíná!`;
     resetButton.style.display = 'none';
 }
 
 function handleClick(event) {
+    if (!event.target.classList.contains('cell')) return;
+    
     const cell = event.target;
     const index = cell.getAttribute('data-index');
 
@@ -46,7 +53,7 @@ function handleClick(event) {
 
     boardState[index] = currentPlayer;
     cell.textContent = currentPlayer;
-    cell.classList.add(currentPlayer);
+    cell.classList.toggle(currentPlayer, true);
 
     if (checkWin()) {
         message.textContent = `Hráč ${currentPlayer} vyhrál!`;
@@ -59,100 +66,65 @@ function handleClick(event) {
         gameActive = false;
         resetButton.style.display = 'block';
     } else {
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        currentPlayer = currentPlayer === PLAYER_X ? PLAYER_O : PLAYER_X;
         message.textContent = `Tah hráče ${currentPlayer}`;
     }
 }
 
 function checkWin() {
     const winningCombinations = generateWinningCombinations(boardSize, winCondition);
-    return winningCombinations.some(combination => {
-        const [a, b, c, d, e] = combination;
-        return (
-            boardState[a] &&
-            boardState[a] === boardState[b] &&
-            boardState[b] === boardState[c] &&
-            (d === undefined || boardState[c] === boardState[d]) &&
-            (e === undefined || boardState[d] === boardState[e])
-        );
-    });
+    return winningCombinations.some(combination => 
+        combination.every(index => boardState[index] === currentPlayer)
+    );
 }
 
 function generateWinningCombinations(size, winCondition) {
     const combinations = [];
-
-    // Horizontální kombinace
-    for (let i = 0; i < size * size; i += size) {
-        for (let j = 0; j <= size - winCondition; j++) {
-            const combination = [];
-            for (let k = 0; k < winCondition; k++) {
-                combination.push(i + j + k);
-            }
-            combinations.push(combination);
+    const directions = [[1, 0], [0, 1], [1, 1], [1, -1]];
+    
+    for (let row = 0; row < size; row++) {
+        for (let col = 0; col < size; col++) {
+            directions.forEach(([dx, dy]) => {
+                if (row + (winCondition - 1) * dx < size && 
+                    col + (winCondition - 1) * dy < size && 
+                    col + (winCondition - 1) * dy >= 0) {
+                    combinations.push(
+                        Array.from({length: winCondition}, (_, i) => 
+                            (row + i * dx) * size + (col + i * dy)
+                        )
+                    );
+                }
+            });
         }
     }
-
-    // Vertikální kombinace
-    for (let i = 0; i < size; i++) {
-        for (let j = 0; j <= size - winCondition; j++) {
-            const combination = [];
-            for (let k = 0; k < winCondition; k++) {
-                combination.push(i + (j + k) * size);
-            }
-            combinations.push(combination);
-        }
-    }
-
-    // Diagonální kombinace
-    for (let i = 0; i <= size - winCondition; i++) {
-        for (let j = 0; j <= size - winCondition; j++) {
-            const combination1 = [];
-            const combination2 = [];
-            for (let k = 0; k < winCondition; k++) {
-                combination1.push(i * size + j + k * (size + 1));
-                combination2.push((i + winCondition - 1) * size + j + k * (size - 1));
-            }
-            combinations.push(combination1);
-            combinations.push(combination2);
-        }
-    }
-
     return combinations;
 }
 
 function highlightWinningCells() {
-    const winningCombinations = generateWinningCombinations(boardSize, winCondition);
-    winningCombinations.forEach(combination => {
-        const [a, b, c, d, e] = combination;
-        if (
-            boardState[a] &&
-            boardState[a] === boardState[b] &&
-            boardState[a] === boardState[c] &&
-            (d === undefined || boardState[c] === boardState[d]) &&
-            (e === undefined || boardState[d] === boardState[e])
-        ) {
-            document.querySelector(`.cell[data-index="${a}"]`).classList.add('winner');
-            document.querySelector(`.cell[data-index="${b}"]`).classList.add('winner');
-            document.querySelector(`.cell[data-index="${c}"]`).classList.add('winner');
-            if (d !== undefined) document.querySelector(`.cell[data-index="${d}"]`).classList.add('winner');
-            if (e !== undefined) document.querySelector(`.cell[data-index="${e}"]`).classList.add('winner');
-        }
-    });
+    const winningCombination = generateWinningCombinations(boardSize, winCondition)
+        .find(combination => combination.every(index => boardState[index] === currentPlayer));
+    
+    if (winningCombination) {
+        winningCombination.forEach(index => 
+            document.querySelector(`.cell[data-index="${index}"]`).classList.add('winner')
+        );
+    }
 }
 
 function updateScore(winner) {
-    scores[winner]++;
-    if (winner === 'X') {
-        scoreX.textContent = scores.X;
+    scores.set(winner, scores.get(winner) + 1);
+    if (winner === PLAYER_X) {
+        scoreX.textContent = scores.get(PLAYER_X);
     } else {
-        scoreO.textContent = scores.O;
+        scoreO.textContent = scores.get(PLAYER_O);
     }
 }
 
 function resetGame() {
-    currentPlayer = 'X';
+    currentPlayer = PLAYER_X;
     boardState = Array(boardSize * boardSize).fill(null);
     renderBoard();
 }
 
+board.addEventListener('click', handleClick);
 renderBoard();
