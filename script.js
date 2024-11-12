@@ -64,7 +64,7 @@ const translations = {
         playAgain: "Play Again",
         score: "Score",
         resetScore: "Reset Score",
-        confirmResetScore : "Are you sure you want to reset the score?",
+        confirmResetScore: "Are you sure you want to reset the score?",
         yes: "Yes",
         no: "No",
         boardSize: "Board size:",
@@ -81,9 +81,6 @@ function updateTexts() {
     document.querySelector('.board-size-buttons .size-label').textContent = translations[currentLanguage].boardSize;
     document.querySelector('.win-condition-buttons .size-label').textContent = translations[currentLanguage].winCondition;
     document.querySelector('.confirm-dialog-content p').textContent = translations[currentLanguage].confirmResetScore;
-
-    // Aktualizace zprávy o aktuálním hráči
-    message.textContent = translations[currentLanguage][currentPlayer === PLAYER_X ? 'playerXTurn' : 'playerOTurn'];
 }
 
 function setBoardSize(size) {
@@ -103,6 +100,18 @@ function setBoardSize(size) {
     updateBoardSizeButtons();
 }
 
+function updateBoardSizeButtons() {
+    const buttons = document.querySelectorAll('.board-size-buttons button');
+    buttons.forEach(button => {
+        const size = parseInt(button.textContent);
+        if (size === boardSize) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    });
+}
+
 function setWinCondition(condition) {
     if (condition <= boardSize) {
         winCondition = condition;
@@ -110,6 +119,19 @@ function setWinCondition(condition) {
         renderBoard();
         updateWinConditionButtons();
     }
+}
+
+function updateWinConditionButtons() {
+    const buttons = document.querySelectorAll('.win-condition-buttons button');
+    buttons.forEach(button => {
+        const condition = parseInt(button.textContent);
+        if (condition === winCondition) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+        button.disabled = condition > boardSize;
+    });
 }
 
 function renderBoard() {
@@ -129,7 +151,7 @@ function renderBoard() {
     }
     
     gameActive = true;
-    message.textContent = translations[currentLanguage][currentPlayer === PLAYER_X ? 'playerXStarts' : 'playerOStarts'];
+    message .textContent = translations[currentLanguage][currentPlayer === PLAYER_X ? 'playerXStarts' : 'playerOStarts'];
     resetButton.style.display = 'none';
 }
 
@@ -184,7 +206,7 @@ function generateWinningCombinations(size, winCondition) {
 
     // Columns
     for (let col = 0; col < size; col++) {
-        for (let row = 0; row <= size - winCondition ; row++) {
+        for (let row = 0; row <= size - winCondition; row++) {
             const combination = [];
             for (let i = 0; i < winCondition; i++) {
                 combination.push((row + i) * size + col);
