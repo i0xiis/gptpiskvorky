@@ -305,6 +305,7 @@ languageToggle.addEventListener('click', () => {
     renderBoard();
 
     document.title = currentLanguage === 'cs' ? 'Piškvorky' : 'Tic Tac Toe';
+    console.log(document.title);
 });
 
 // Initial setup
