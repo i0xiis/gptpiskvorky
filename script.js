@@ -303,6 +303,8 @@ languageToggle.addEventListener('click', () => {
     currentLanguage = currentLanguage === 'cs' ? 'en' : 'cs';
     updateTexts();
     renderBoard();
+
+    document.title = currentLanguage === 'cs' ? 'Piškvorky' : 'Tic Tac Toe';
 });
 
 // Initial setup
