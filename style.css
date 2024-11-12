@@ -350,3 +350,9 @@ body.dark-mode .confirm-dialog button:hover {
         width: 90%;
     }
 }
+
+@media (min-width: 600px) {
+    #settingsToggle { /* Nahraďte #settingsButton ID vašeho tlačítka */
+        display: none;
+    }
+}
