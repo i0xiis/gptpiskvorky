@@ -256,8 +256,8 @@ function highlightWinningCells() {
 
 function updateScore(winner) {
     scores.set(winner, scores.get(winner) + 1);
-    scoreX.textContent = `X: ${scores.get(PLAYER_X)}`;
-    scoreO.textContent = `O: ${scores.get(PLAYER_O)}`;
+    scoreX.textContent = `${scores.get(PLAYER_X)}`;
+    scoreO.textContent = `${scores.get(PLAYER_O)}`;
 }
 
 function resetGame() {
@@ -278,8 +278,8 @@ function confirmResetScore() {
 function resetScore() {
     scores.set(PLAYER_X, 0);
     scores.set(PLAYER_O, 0);
-    scoreX.textContent = `X: ${scores.get(PLAYER_X)}`;
-    scoreO.textContent = `O: ${scores.get(PLAYER_O)}`;
+    scoreX.textContent = `${scores.get(PLAYER_X)}`;
+    scoreO.textContent = `${scores.get(PLAYER_O)}`;
     confirmDialog.style.display = 'none';
 }
 
