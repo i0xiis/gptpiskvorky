@@ -302,6 +302,7 @@ confirmNo.addEventListener('click', closeConfirmDialog);
 languageToggle.addEventListener('click', () => {
     currentLanguage = currentLanguage === 'cs' ? 'en' : 'cs';
     updateTexts();
+    renderBoard();
 });
 
 // Initial setup
