@@ -304,7 +304,13 @@ languageToggle.addEventListener('click', () => {
     updateTexts();
     renderBoard();
 
-    document.title = currentLanguage === 'cs' ? 'Piškvorky' : 'Tic Tac Toe';
+    // Změna titulku stránky
+    if (currentLanguage === 'cs') {
+        document.title = 'Piškvorky';
+    } else {
+        document.title = 'Tic Tac Toe';
+    }
+
 });
 
 // Initial setup
