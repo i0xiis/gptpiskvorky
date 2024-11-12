@@ -92,7 +92,7 @@ function setBoardSize(size) {
     } else {
         winCondition = 5;
     }
-    const cellSize = size === 15 ? 30 : 100;
+    const cellSize = size === 15 ? 40 : 100;
     document.documentElement.style.setProperty('--cell-size', cellSize + 'px');
     resetGame();
     renderBoard();
@@ -136,7 +136,7 @@ function updateWinConditionButtons() {
 
 function renderBoard() {
     board.innerHTML = '';
-    const cellSize = boardSize === 15 ? 30 : 100;
+    const cellSize = boardSize === 15 ? 40 : 100;
     board.style.gridTemplate = `repeat(${boardSize}, ${cellSize}px) / repeat(${boardSize}, ${cellSize}px)`;
 
     boardState = Array(boardSize * boardSize).fill(null);
