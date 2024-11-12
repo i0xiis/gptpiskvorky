@@ -12,7 +12,9 @@ const {
     confirmDialog,
     confirmYes,
     confirmNo,
-    languageToggle
+    languageToggle,
+    settingsToggle,
+    settingsContainer
 } = {
     board: document.getElementById('board'),
     message: document.getElementById('message'),
@@ -24,8 +26,16 @@ const {
     confirmDialog: document.getElementById('confirmDialog'),
     confirmYes: document.getElementById('confirmYes'),
     confirmNo: document.getElementById('confirmNo'),
-    languageToggle: document.getElementById('languageToggle')
+    languageToggle: document.getElementById('languageToggle'),
+    settingsToggle: document.getElementById('settingsToggle'),
+    settingsContainer: document.getElementById('settingsContainer')
 };
+
+settingsToggle.addEventListener('click', () => {
+    // Přepínání viditelnosti nastavení
+    settingsContainer.style.display = settingsContainer.style.display === 'none' ? 'block' : 'none';
+});
+
 
 let currentPlayer = PLAYER_X;
 let gameActive = true;
@@ -92,7 +102,7 @@ function setBoardSize(size) {
     } else {
         winCondition = 5;
     }
-    const cellSize = size === 15 ? 40 : 100;
+    const cellSize = (window.innerWidth < 600) ? 60 : (size === 15 ? 40 : 100);
     document.documentElement.style.setProperty('--cell-size', cellSize + 'px');
     resetGame();
     renderBoard();
@@ -136,7 +146,7 @@ function updateWinConditionButtons() {
 
 function renderBoard() {
     board.innerHTML = '';
-    const cellSize = boardSize === 15 ? 40 : 100;
+    const cellSize = (window.innerWidth < 600) ? 60 : (boardSize === 15 ? 40 : 100);
     board.style.gridTemplate = `repeat(${boardSize}, ${cellSize}px) / repeat(${boardSize}, ${cellSize}px)`;
 
     boardState = Array(boardSize * boardSize).fill(null);
@@ -151,7 +161,7 @@ function renderBoard() {
     }
     
     gameActive = true;
-    message .textContent = translations[currentLanguage][currentPlayer === PLAYER_X ? 'playerXStarts' : 'playerOStarts'];
+    message.textContent = translations[currentLanguage][currentPlayer === PLAYER_X ? 'playerXStarts' : 'playerOStarts'];
     resetButton.style.display = 'none';
 }
 

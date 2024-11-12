@@ -330,3 +330,23 @@ body.dark-mode .confirm-dialog button {
 body.dark-mode .confirm-dialog button:hover {
     background-color: #45a049;
 }
+
+/* Responsivní styly */
+@media (max-width: 600px) {
+    :root {
+        --cell-size: 60px;
+    }
+    .scoreboard, .board-size-buttons, .win-condition-buttons {
+        font-size: 0.9em;
+    }
+    .reset-score-button, .reset-button, .dark-mode-toggle, .language-toggle {
+        font-size: 1em;
+    }
+    .board {
+        gap: 3px;
+        padding: 5px;
+    }
+    .confirm-dialog-content {
+        width: 90%;
+    }
+}

@@ -12,7 +12,12 @@
         <span class="score-text">Skóre - </span>X: <span id="scoreX">0</span> | O: <span id="scoreO">0</span>
         <button id="resetScoreButton" class="reset-score-button">Resetovat skóre</button>
     </div>
-    <div class="settings-container">
+    
+    <!-- Tlačítko pro mobilní menu nastavení -->
+    <button id="settingsToggle" class="settings-toggle">⚙️ Nastavení</button>
+
+    <!-- Kontejner nastavení, který bude skrytý na mobilních zařízeních -->
+    <div class="settings-container" id="settingsContainer">
         <div class="board-size-buttons">
             <div class="size-label">Velikost hrací plochy:</div>
             <button onclick="setBoardSize(3)">3×3</button>
@@ -27,11 +32,13 @@
             <button onclick="setWinCondition(5)">5</button>
         </div>
     </div>
+
     <div class="container">
         <div class="message" id="message">Hráč X začíná!</div>
         <div class="board" id="board"></div>
         <button id="resetButton" class="reset-button">Hrát znovu</button>
     </div>
+    
     <button id="darkModeToggle" class="dark-mode-toggle">☀️</button>
     <button id="languageToggle" class="language-toggle">🌐</button>
 
