@@ -299,13 +299,13 @@ darkModeToggle.addEventListener('click', toggleDarkMode);
 resetScoreButton.addEventListener('click', confirmResetScore);
 confirmYes.addEventListener('click', resetScore);
 confirmNo.addEventListener('click', closeConfirmDialog);
+
 languageToggle.addEventListener('click', () => {
     currentLanguage = currentLanguage === 'cs' ? 'en' : 'cs';
     updateTexts();
     renderBoard();
 
     document.title = currentLanguage === 'cs' ? 'Piškvorky' : 'Tic Tac Toe';
-    console.log(document.title);
 });
 
 // Initial setup
