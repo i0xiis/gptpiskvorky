@@ -31,11 +31,27 @@ const {
     settingsContainer: document.getElementById('settingsContainer')
 };
 
+// Přepínání viditelnosti nastavení na mobilních zařízeních
 settingsToggle.addEventListener('click', () => {
-    // Přepínání viditelnosti nastavení
-    settingsContainer.style.display = settingsContainer.style.display === 'none' ? 'block' : 'none';
+    if (window.innerWidth < 600) {
+        settingsContainer.style.display = settingsContainer.style.display === 'none' ? 'block' : 'none';
+    }
 });
 
+// Přizpůsobení viditelnosti nastavení podle velikosti okna
+function adjustSettingsVisibility() {
+    if (window.innerWidth >= 600) {
+        // Na počítačích bude nastavení vždy viditelné
+        settingsContainer.style.display = 'block';
+    } else {
+        // Na mobilních zařízeních se řídí tlačítkem
+        settingsContainer.style.display = 'none';
+    }
+}
+
+// Zajistěte, že se při načtení i změně velikosti okna logika spustí
+window.addEventListener('resize', adjustSettingsVisibility);
+window.addEventListener('load', adjustSettingsVisibility);
 
 let currentPlayer = PLAYER_X;
 let gameActive = true;
@@ -95,15 +111,9 @@ function updateTexts() {
 
 function setBoardSize(size) {
     boardSize = size;
-    if (size === 3) {
-        winCondition = 3;
-    } else if (size === 4) {
-        winCondition = 4;
-    } else {
-        winCondition = 5;
-    }
-    const cellSize = (window.innerWidth < 600) ? 60 : (size === 15 ? 40 : 100);
-    document.documentElement.style.setProperty('--cell-size', cellSize + 'px');
+    winCondition = size === 3 ? 3 : (size === 4 ? 4 : 5);
+    const cellSize = window.innerWidth < 600 ? 50 : (size === 15 ? 40 : 100);
+    document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
     resetGame();
     renderBoard();
     updateWinConditionButtons();
@@ -146,7 +156,9 @@ function updateWinConditionButtons() {
 
 function renderBoard() {
     board.innerHTML = '';
-    const cellSize = (window.innerWidth < 600) ? 60 : (boardSize === 15 ? 40 : 100);
+
+    // Dynamická velikost buněk na základě šířky okna
+    const cellSize = window.innerWidth < 600 ? 40 : (boardSize === 15 ? 40 : 100);
     board.style.gridTemplate = `repeat(${boardSize}, ${cellSize}px) / repeat(${boardSize}, ${cellSize}px)`;
 
     boardState = Array(boardSize * boardSize).fill(null);
@@ -156,10 +168,10 @@ function renderBoard() {
         cell.setAttribute('data-index', i);
         cell.style.width = `${cellSize}px`;
         cell.style.height = `${cellSize}px`;
-        cell.style.fontSize = boardSize === 15 ? '1.2em' : '2em';
+        cell.style.fontSize = boardSize === 15 ? '1em' : '1.5em';
         board.appendChild(cell);
     }
-    
+
     gameActive = true;
     message.textContent = translations[currentLanguage][currentPlayer === PLAYER_X ? 'playerXStarts' : 'playerOStarts'];
     resetButton.style.display = 'none';
@@ -314,7 +326,6 @@ languageToggle.addEventListener('click', () => {
     currentLanguage = currentLanguage === 'cs' ? 'en' : 'cs';
     updateTexts();
     renderBoard();
-
     document.title = currentLanguage === 'cs' ? 'Piškvorky' : 'Tic Tac Toe';
 });
 
@@ -322,3 +333,4 @@ languageToggle.addEventListener('click', () => {
 updateTexts();
 renderBoard();
 initializeButtons();
+adjustSettingsVisibility();
