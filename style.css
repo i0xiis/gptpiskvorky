@@ -124,7 +124,7 @@ body.dark-mode {
     background-color: #ddd;
     padding: 10px;
     border-radius: 10px;
-    z-index: 2; /* Zajištění, aby hrací plocha byla nad kontejnerem settings */
+    z-index: 2;
 }
 
 .cell {
@@ -198,6 +198,24 @@ body.dark-mode {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Styl tlačítka nastavení */
+#settingsToggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+#settingsToggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Dark mode styles */
 body.dark-mode .board-size-buttons,
 body.dark-mode .win-condition-buttons {
@@ -250,7 +268,8 @@ body.dark-mode .reset-button:hover {
 }
 
 body.dark-mode .dark-mode-toggle:hover,
-body.dark-mode .language-toggle:hover {
+body.dark-mode .language-toggle:hover,
+body.dark-mode #settingsToggle:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -387,11 +406,11 @@ body.dark-mode .confirm-dialog button:hover {
         top: 15px;
         right: 15px;
         font-size: 1.5em;
-        background-color: #4CAF50;
-        color: #fff;
+        background: none;
         border: none;
-        border-radius: 50%;
+        cursor: pointer;
         padding: 10px;
+        border-radius: 50%;
         z-index: 10;
     }
 }
@@ -411,7 +430,7 @@ body.dark-mode .confirm-dialog button:hover {
         padding: 15px;
         border-radius: 10px;
         z-index: 1;
-        background-color: transparent; /* Nastaveno na průhledné pozadí */
-        box-shadow: none; /* Odstraněn stín */
+        background-color: transparent;
+        box-shadow: none;
     }
 }

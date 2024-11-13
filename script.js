@@ -318,7 +318,9 @@ function initializeButtons() {
 board.addEventListener('click', handleClick);
 resetButton.addEventListener('click', resetGame);
 darkModeToggle.addEventListener('click', toggleDarkMode);
-resetScoreButton.addEventListener('click', confirmResetScore);
+resetScoreButton.addEventListener('click', () => {
+    confirmDialog.style.display = 'block';
+});
 confirmYes.addEventListener('click', resetScore);
 confirmNo.addEventListener('click', closeConfirmDialog);
 
